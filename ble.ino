@@ -10,16 +10,13 @@ static const uint8_t LED_PIN = 29;
 // How long to wait after the last button press before shutting down the system.
 static const uint32_t kShutdownDelayMs = 3 * 60 * 60 * 1000;
 
-//custom boards may override default pin definitions with BLEPeripheral(PIN_REQ, PIN_RDY, PIN_RST)
-BLEPeripheral                    blePeripheral                            = BLEPeripheral();
+BLEPeripheral blePeripheral = BLEPeripheral();
 
 // create service
-//BLEService               ledService           = BLEService("19b10000e8f2537e4f6cd104768a1214");
-BLEService               ledService           = BLEService("89a8591dbb19485b9f5958492bc33e24");
+BLEService ledService = BLEService("89a8591dbb19485b9f5958492bc33e24");
 
 // create switch characteristic
-//BLECharCharacteristic    switchCharacteristic = BLECharCharacteristic("19b10001e8f2537e4f6cd104768a1214", BLERead | BLEWrite);
-BLECharCharacteristic    switchCharacteristic = BLECharCharacteristic("894c8042e841461ca5c95a73d25db08e", BLERead | BLENotify);
+BLECharCharacteristic switchCharacteristic = BLECharCharacteristic("894c8042e841461ca5c95a73d25db08e", BLERead | BLENotify);
 
 #ifdef TIME_PROP
 BLEUnsignedIntCharacteristic    timeCharacteristic = BLEUnsignedIntCharacteristic("894c8042e841461ca5c95a73d25db08f", BLERead | BLENotify);

@@ -22,6 +22,7 @@ BLEService ledService = BLEService("89a8591dbb19485b9f5958492bc33e24");
 BLECharCharacteristic switchCharacteristic = BLECharCharacteristic("894c8042e841461ca5c95a73d25db08e", BLERead | BLENotify);
 
 // State transition and executes exit action for the current state.
+// Diagram: https://photos.app.goo.gl/6E5oTZQ78MnhBJMR8
 StateEnum stateTransition(StateContainer *sc, Event e) {
   StateEnum newState = STATE_INVALID;
   switch (sc->state) {

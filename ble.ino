@@ -13,13 +13,48 @@ void buttonInterruptHandler() {
   buttonPressFlag = true;
 }
 
+// Used for reading battery voltage. Taken from
+// https://os.mbed.com/users/MarceloSalazar/notebook/measuring-battery-voltage-with-nordic-nrf51x/
+uint16_t readVoltageAdc(void)
+{
+    NRF_ADC->ENABLE = ADC_ENABLE_ENABLE_Enabled;
+    NRF_ADC->CONFIG = (ADC_CONFIG_RES_10bit << ADC_CONFIG_RES_Pos) |
+                      (ADC_CONFIG_INPSEL_SupplyOneThirdPrescaling << ADC_CONFIG_INPSEL_Pos) |
+                      (ADC_CONFIG_REFSEL_VBG << ADC_CONFIG_REFSEL_Pos) |
+                      (ADC_CONFIG_PSEL_Disabled << ADC_CONFIG_PSEL_Pos) |
+                      (ADC_CONFIG_EXTREFSEL_None << ADC_CONFIG_EXTREFSEL_Pos);
+
+    NRF_ADC->CONFIG     &= ~ADC_CONFIG_PSEL_Msk;
+    NRF_ADC->CONFIG     |= ADC_CONFIG_PSEL_Disabled << ADC_CONFIG_PSEL_Pos;
+    NRF_ADC->TASKS_START = 1;
+    while (((NRF_ADC->BUSY & ADC_BUSY_BUSY_Msk) >> ADC_BUSY_BUSY_Pos) == ADC_BUSY_BUSY_Busy) {};
+		uint16_t result = static_cast<uint16_t>(NRF_ADC->RESULT); // 10 bit
+    NRF_ADC->ENABLE = ADC_ENABLE_ENABLE_Disabled;
+    return result;
+}
+
+uint8_t adcVoltageToPercent(uint16_t adcVoltage) {
+  float voltage = static_cast<float>(adcVoltage) * 3.6 / 1024.0;
+	// Assume linear range between 1.8 and 3.1 volts which will stay at full charge for
+	// a long time then drop rapidly.
+	// TODO: much better to use a discharge graph like
+	// https://components101.com/batteries/cr2032-lithium-coin-cell-pinout-specs-equivalent-datasheet
+	uint8_t pct = static_cast<uint8_t>((voltage - 1.8) * 100 / (3.1 - 1.8));
+	if (pct > 100) {
+	  pct = 100;
+	}
+	return pct;
+}
+
 BLEPeripheral blePeripheral = BLEPeripheral();
 
 // create service
-BLEService ledService = BLEService("89a8591dbb19485b9f5958492bc33e24");
+BLEService ledService("89a8591dbb19485b9f5958492bc33e24");
+BLEService batteryService("0000180f00001000800000805f9b34fb");
 
 // create switch characteristic
-BLECharCharacteristic switchCharacteristic = BLECharCharacteristic("894c8042e841461ca5c95a73d25db08e", BLERead | BLENotify);
+BLECharCharacteristic switchCharacteristic("894c8042e841461ca5c95a73d25db08e", BLERead | BLENotify);
+BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb", BLERead);
 
 // State transition and executes exit action for the current state.
 // Diagram: https://photos.app.goo.gl/6E5oTZQ78MnhBJMR8
@@ -66,6 +101,7 @@ StateEnum stateTransition(StateContainer *sc, Event e) {
 		} else {
 		  newState = STATE_SLEEP;
 			switchCharacteristic.setValue(0);
+			batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
 		}
 	  break;
 	default:
@@ -154,20 +190,21 @@ void setup() {
     
   // set advertised local name and service UUID
   blePeripheral.setLocalName("100% PTT");
+  blePeripheral.setDeviceName("100% PTT");
   blePeripheral.setAdvertisedServiceUuid(ledService.uuid());
   blePeripheral.setAdvertisingInterval(1000);
 
   // add service and characteristic
   blePeripheral.addAttribute(ledService);
   blePeripheral.addAttribute(switchCharacteristic);
+  blePeripheral.addAttribute(batteryService);
+  blePeripheral.addAttribute(batteryLevel);
 
-  // assign event handlers for connected, disconnected to peripheral
-  blePeripheral.setEventHandler(BLEConnected, blePeripheralConnectHandler);
-  blePeripheral.setEventHandler(BLEDisconnected, blePeripheralDisconnectHandler);
   // begin initialization
   blePeripheral.begin();
   switchCharacteristic.setValue(0);
-  
+  batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
+
   // enable low power mode and interrupt
   sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
   attachInterruptLowAccuracy(digitalPinToInterrupt(BUTTON_PIN), buttonInterruptHandler, FALLING);

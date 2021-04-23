@@ -141,6 +141,7 @@ Event getEvents(StateContainer *sc) {
 void loop() {
 	blinkQuick();
 	Event e = getEvents(&sc);
+	StateEnum oldState = sc.state;
 	stateTransition(&sc, e);
 
 	// Perform the actions upon entering the (new) state.
@@ -163,7 +164,9 @@ void loop() {
 	case STATE_ENSURE_DOWN:
 		break;
 	case STATE_TRANSMIT:
-		switchCharacteristic.setValue(1);
+		if (oldState != sc.state) {
+			switchCharacteristic.setValue(1);
+		}
 		digitalWrite(LED_PIN, HIGH);
 		break;
 	case STATE_ENSURE_UP:
@@ -191,6 +194,7 @@ void setup() {
   // set advertised local name and service UUID
   blePeripheral.setLocalName("100% PTT");
   blePeripheral.setDeviceName("100% PTT");
+  blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   blePeripheral.setAdvertisedServiceUuid(ledService.uuid());
   blePeripheral.setAdvertisingInterval(1000);
 

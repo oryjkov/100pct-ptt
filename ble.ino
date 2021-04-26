@@ -196,7 +196,8 @@ void setup() {
   blePeripheral.setDeviceName("100% PTT");
   blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   blePeripheral.setAdvertisedServiceUuid(ledService.uuid());
-  blePeripheral.setAdvertisingInterval(1000);
+  blePeripheral.setAdvertisingInterval(300);
+  blePeripheral.setConnectionInterval(100, 200);
 
   // add service and characteristic
   blePeripheral.addAttribute(ledService);

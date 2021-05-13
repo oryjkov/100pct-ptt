@@ -1,5 +1,5 @@
 #ifndef BLINK_H_
-  #include "pins.h"
+#include "pins.h"
 
 void blinkQuick() {
   digitalWrite(LED_PIN, LOW);
@@ -22,5 +22,5 @@ void blinkToDeath() {
     delay(300);
   }
 }
-  #define BLINK_H_
+#define BLINK_H_
 #endif  // BLINK_H_

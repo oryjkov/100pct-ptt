@@ -67,6 +67,8 @@ StateEnum stateTransition(StateContainer *sc, Event e) {
 	case STATE_BROADCAST:
 		if (e & EVENT_CONNECTED) {
 		  newState = STATE_SLEEP;
+		} else if (e & EVENT_MINUTES_10) {
+		  newState = STATE_OFF;
 		} else {
 		  newState = STATE_BROADCAST;
 		}
@@ -74,18 +76,20 @@ StateEnum stateTransition(StateContainer *sc, Event e) {
 	case STATE_SLEEP:
 		if (e & EVENT_BUTTON_DOWN) {
 		  newState = STATE_ENSURE_DOWN;
-		} else if (e & EVENT_HOURS_3) {
+		} else if (e & EVENT_SHUTDOWN_TIMEOUT) {
 		  newState = STATE_OFF;
+		} else if (e & EVENT_DISCONNECTED) {
+		  newState = STATE_BROADCAST;
 		} else {
 		  newState = STATE_SLEEP;
 		}
 	  break;
 	case STATE_ENSURE_DOWN:
 	  if (e & EVENT_MILLIS_10) {
-		  newState = STATE_TRANSMIT;
-		} else {
-		  newState = STATE_SLEEP;
-		}
+        newState = STATE_TRANSMIT;
+      } else {
+        newState = STATE_SLEEP;
+      }
 	  break;
 	case STATE_TRANSMIT:
 		if (e & EVENT_BUTTON_UP) {
@@ -126,13 +130,18 @@ Event getEvents(StateContainer *sc) {
 		e = static_cast<Event>(e | Event(EVENT_BUTTON_UP));
 	}
 	if ((millis() - sc->stateEnteredMs) > kShutdownDelayMs) {
-		e = static_cast<Event>(e | Event(EVENT_HOURS_3));
+		e = static_cast<Event>(e | Event(EVENT_SHUTDOWN_TIMEOUT));
+	}
+	if ((millis() - sc->stateEnteredMs) > 10 * 60 * 1000) {
+		e = static_cast<Event>(e | Event(EVENT_MINUTES_10));
 	}
 	if ((millis() - sc->stateEnteredMs) > 10) {
 		e = static_cast<Event>(e | Event(EVENT_MILLIS_10));
 	}
 	if (blePeripheral.connected()) {
 		e = static_cast<Event>(e | Event(EVENT_CONNECTED));
+	} else {
+		e = static_cast<Event>(e | Event(EVENT_DISCONNECTED));
 	}
 
   return e;

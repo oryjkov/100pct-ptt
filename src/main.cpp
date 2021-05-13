@@ -230,7 +230,7 @@ void setup() {
   // enable low power mode and interrupt
   sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
   attachInterruptLowAccuracy(digitalPinToInterrupt(BUTTON_PIN),
-                             buttonInterruptHandler, FALLING);
+   buttonInterruptHandler, FALLING);
 
   sc.state = STATE_OFF;
 }

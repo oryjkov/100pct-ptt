@@ -5,8 +5,18 @@
 #include "pins.h"
 #include "types.h"
 
-// How long to wait after the last button press before shutting down the system.
-static const uint32_t kShutdownDelayMs = 3 * 60 * 60 * 1000;
+// How long to wait after the last button press before shutting down the system
+// from the connected state.
+static const uint32_t kDisconnectAndShutdownDelayMs = 3 * 60 * 60 * 1000;
+// How long to wait after the last button press before shutting down the system
+// from the advertising state.
+static const uint32_t kShutdownDelayMs = 10 * 60 * 1000;
+
+// Frequency of BT advertising transmissions.
+static const uint32_t kAdvertisingIntervalMs = 100;
+// min, max connection interval. Lower values make the button more responsive.
+static const uint32_t kConnectionIntervalMinMs = 100;
+static const uint32_t kConnectionIntervalMaxMs = 100;
 
 volatile bool buttonPressFlag = false;
 void buttonInterruptHandler() { buttonPressFlag = true; }
@@ -54,9 +64,9 @@ BLEService batteryService("0000180f00001000800000805f9b34fb");
 
 // create switch characteristic
 BLECharCharacteristic switchCharacteristic("894c8042e841461ca5c95a73d25db08e",
-                                           BLERead | BLENotify);
+ BLERead | BLENotify);
 BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb",
-                                           BLERead);
+ BLERead);
 
 // State transition and executes exit action for the current state.
 // Diagram: https://photos.app.goo.gl/6E5oTZQ78MnhBJMR8
@@ -64,7 +74,11 @@ StateEnum stateTransition(StateContainer* sc, Event e) {
   StateEnum newState = STATE_INVALID;
   switch (sc->state) {
     case STATE_OFF:
-      newState = STATE_BROADCAST;
+      if (e & EVENT_BUTTON_DOWN) {
+        newState = STATE_BROADCAST;
+      } else {
+        newState = STATE_OFF;
+      }
       break;
     case STATE_BROADCAST:
       if (e & EVENT_CONNECTED) {
@@ -131,10 +145,10 @@ Event getEvents(StateContainer* sc) {
   if (digitalRead(BUTTON_PIN) == HIGH) {
     e = static_cast<Event>(e | Event(EVENT_BUTTON_UP));
   }
-  if ((millis() - sc->stateEnteredMs) > kShutdownDelayMs) {
+  if ((millis() - sc->stateEnteredMs) > kDisconnectAndShutdownDelayMs) {
     e = static_cast<Event>(e | Event(EVENT_SHUTDOWN_TIMEOUT));
   }
-  if ((millis() - sc->stateEnteredMs) > 10 * 60 * 1000) {
+  if ((millis() - sc->stateEnteredMs) > kShutdownDelayMs) {
     e = static_cast<Event>(e | Event(EVENT_MINUTES_10));
   }
   if ((millis() - sc->stateEnteredMs) > 10) {
@@ -213,8 +227,8 @@ void setup() {
   blePeripheral.setDeviceName("100% PTT");
   blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   blePeripheral.setAdvertisedServiceUuid(ledService.uuid());
-  blePeripheral.setAdvertisingInterval(300);
-  blePeripheral.setConnectionInterval(100, 200);
+  blePeripheral.setAdvertisingInterval(kAdvertisingIntervalMs);
+  blePeripheral.setConnectionInterval(kConnectionIntervalMinMs, kConnectionIntervalMaxMs);
 
   // add service and characteristic
   blePeripheral.addAttribute(ledService);

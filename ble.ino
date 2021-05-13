@@ -190,7 +190,7 @@ void setup() {
 	// Button needs a pull up not to be noisy.
   NRF_GPIO->PIN_CNF[BUTTON_PIN] &= ~((uint32_t)GPIO_PIN_CNF_PULL_Msk);
   NRF_GPIO->PIN_CNF[BUTTON_PIN] |= ((uint32_t)GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos);
-    
+
   // set advertised local name and service UUID
   blePeripheral.setLocalName("100% PTT");
   blePeripheral.setDeviceName("100% PTT");

@@ -1,4 +1,5 @@
 #ifndef TYPES_H_
+
 enum StateEnum {
   STATE_INVALID,
   STATE_OFF,
@@ -24,5 +25,6 @@ enum Event : uint32_t {
   EVENT_MINUTES_10 = (1u << 6),
   EVENT_MILLIS_10 = (1u << 7),
 };
+
 #define TYPES_H_
 #endif  // TYPES_H_

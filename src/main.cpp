@@ -59,12 +59,13 @@ uint8_t adcVoltageToPercent(uint16_t adcVoltage) {
 BLEPeripheral blePeripheral = BLEPeripheral();
 
 // create service
-BLEService ledService("89a8591dbb19485b9f5958492bc33e24");
-BLEService batteryService("0000180f00001000800000805f9b34fb");
+//BLEService ledService("89a8591dbb19485b9f5958492bc33e24");
+//BLEService ledService("0000ffe000001000800000805f9b34fb");
+// ffe0 is what a ptt button that worked on an iphone used
+BLEService ledService("ffe0");
+BLECharCharacteristic switchCharacteristic("ffe1", BLERead | BLENotify);
 
-// create switch characteristic
-BLECharCharacteristic switchCharacteristic("894c8042e841461ca5c95a73d25db08e",
- BLERead | BLENotify);
+BLEService batteryService("0000180f00001000800000805f9b34fb");
 BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb",
  BLERead);
 

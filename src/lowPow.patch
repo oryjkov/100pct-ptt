@@ -1,3 +1,13 @@
+From f01bd0b472a58ec6b1606d643c8b8a41ea1bb597 Mon Sep 17 00:00:00 2001
+From: Jean-Matthieu DECHRISTE <jeanmatthieu@dechriste.fr>
+Date: Thu, 27 Jun 2019 18:03:21 +0200
+Subject: [PATCH] Enables GPIO low accuracy interrupt using the PORT event and
+ the pin SENSE register.
+
+apply with:
+cat src/lowPow.patch | (cd ~/.platformio/packages/framework-arduinonordicnrf5 && patch -p1)
+
+---
 diff --git a/cores/nRF5/WInterrupts.c b/cores/nRF5/WInterrupts.c
 index 59cc3cb..67de5e0 100644
 --- a/cores/nRF5/WInterrupts.c

@@ -7,7 +7,9 @@
 
 // How long to wait after the last button press before shutting down the system
 // from the connected state.
-static const uint32_t kDisconnectAndShutdownDelayMs = 3 * 60 * 60 * 1000;
+static const uint32_t kDisconnectAndShutdownDelayMs = 6 * 60 * 60 * 1000;
+// for xalps buttons:
+//static const uint32_t kDisconnectAndShutdownDelayMs = 300 * 60 * 60 * 1000;
 // How long to wait after the last button press before shutting down the system
 // from the advertising state.
 static const uint32_t kShutdownDelayMs = 10 * 60 * 1000;
@@ -59,11 +61,11 @@ uint8_t adcVoltageToPercent(uint16_t adcVoltage) {
 BLEPeripheral blePeripheral = BLEPeripheral();
 
 // create service
-//BLEService ledService("89a8591dbb19485b9f5958492bc33e24");
-//BLEService ledService("0000ffe000001000800000805f9b34fb");
+//BLEService buttonService("89a8591dbb19485b9f5958492bc33e24");
+//BLEService buttonService("0000ffe000001000800000805f9b34fb");
 // ffe0 is what a ptt button that worked on an iphone used
-BLEService ledService("ffe0");
-BLECharCharacteristic switchCharacteristic("ffe1", BLERead | BLENotify);
+BLEService buttonService("ffe0");
+BLECharCharacteristic buttonCharacteristic("ffe1", BLERead | BLENotify);
 
 BLEService batteryService("0000180f00001000800000805f9b34fb");
 BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb",
@@ -121,7 +123,7 @@ StateEnum stateTransition(StateContainer* sc, Event e) {
         newState = STATE_TRANSMIT;
       } else {
         newState = STATE_SLEEP;
-        switchCharacteristic.setValue(0);
+        buttonCharacteristic.setValue(0);
         batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
       }
       break;
@@ -194,7 +196,7 @@ void loop() {
       break;
     case STATE_TRANSMIT:
       if (oldState != sc.state) {
-        switchCharacteristic.setValue(1);
+        buttonCharacteristic.setValue(1);
       }
       digitalWrite(LED_PIN, HIGH);
       break;
@@ -227,19 +229,19 @@ void setup() {
   blePeripheral.setLocalName("100% PTT");
   blePeripheral.setDeviceName("100% PTT");
   blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
-  blePeripheral.setAdvertisedServiceUuid(ledService.uuid());
+  blePeripheral.setAdvertisedServiceUuid(buttonService.uuid());
   blePeripheral.setAdvertisingInterval(kAdvertisingIntervalMs);
   blePeripheral.setConnectionInterval(kConnectionIntervalMinMs, kConnectionIntervalMaxMs);
 
   // add service and characteristic
-  blePeripheral.addAttribute(ledService);
-  blePeripheral.addAttribute(switchCharacteristic);
+  blePeripheral.addAttribute(buttonService);
+  blePeripheral.addAttribute(buttonCharacteristic);
   blePeripheral.addAttribute(batteryService);
   blePeripheral.addAttribute(batteryLevel);
 
   // begin initialization
   blePeripheral.begin();
-  switchCharacteristic.setValue(0);
+  buttonCharacteristic.setValue(0);
   batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
 
   // enable low power mode and interrupt

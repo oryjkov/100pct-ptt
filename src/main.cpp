@@ -12,10 +12,10 @@ static const uint32_t kDisconnectAndShutdownDelayMs = 6 * 60 * 60 * 1000;
 //static const uint32_t kDisconnectAndShutdownDelayMs = 300 * 60 * 60 * 1000;
 // How long to wait after the last button press before shutting down the system
 // from the advertising state.
-static const uint32_t kShutdownDelayMs = 10 * 60 * 1000;
+static const uint32_t kShutdownDelayMs = 1 * 60 * 1000;
 
 // Frequency of BT advertising transmissions.
-static const uint32_t kAdvertisingIntervalMs = 100;
+static const uint32_t kAdvertisingIntervalMs = 300;
 // min, max connection interval. Lower values make the button more responsive.
 static const uint32_t kConnectionIntervalMinMs = 100;
 static const uint32_t kConnectionIntervalMaxMs = 100;
@@ -215,6 +215,10 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
 
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
+  delay(500);
   // Button press signals wake up. See
   // https://github.com/sandeepmistry/arduino-nRF5/issues/243
   NRF_GPIO->PIN_CNF[BUTTON_PIN] &= ~((uint32_t)GPIO_PIN_CNF_SENSE_Msk);

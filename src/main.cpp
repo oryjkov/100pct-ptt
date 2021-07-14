@@ -15,10 +15,10 @@ static const uint32_t kDisconnectAndShutdownDelayMs = 6 * 60 * 60 * 1000;
 static const uint32_t kShutdownDelayMs = 1 * 60 * 1000;
 
 // Frequency of BT advertising transmissions.
-static const uint32_t kAdvertisingIntervalMs = 300;
+static const uint32_t kAdvertisingIntervalMs = 60;
 // min, max connection interval. Lower values make the button more responsive.
-static const uint32_t kConnectionIntervalMinMs = 100;
-static const uint32_t kConnectionIntervalMaxMs = 100;
+static const uint32_t kConnectionIntervalMinMs = 9;
+static const uint32_t kConnectionIntervalMaxMs = 9;
 
 volatile bool buttonPressFlag = false;
 void buttonInterruptHandler() { buttonPressFlag = true; }
@@ -65,11 +65,11 @@ BLEPeripheral blePeripheral = BLEPeripheral();
 //BLEService buttonService("0000ffe000001000800000805f9b34fb");
 // ffe0 is what a ptt button that worked on an iphone used
 BLEService buttonService("ffe0");
+BLEUnsignedCharCharacteristic iphoneCharacteristic("1525", BLERead | BLEWrite);
 BLECharCharacteristic buttonCharacteristic("ffe1", BLERead | BLENotify);
 
-BLEService batteryService("0000180f00001000800000805f9b34fb");
-BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb",
- BLERead);
+//BLEService batteryService("0000180f00001000800000805f9b34fb");
+//BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb", BLERead);
 
 // State transition and executes exit action for the current state.
 // Diagram: https://photos.app.goo.gl/6E5oTZQ78MnhBJMR8
@@ -124,7 +124,7 @@ StateEnum stateTransition(StateContainer* sc, Event e) {
       } else {
         newState = STATE_SLEEP;
         buttonCharacteristic.setValue(0);
-        batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
+        //batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
       }
       break;
     default:
@@ -230,8 +230,10 @@ void setup() {
       ((uint32_t)GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos);
 
   // set advertised local name and service UUID
-  blePeripheral.setLocalName("100% PTT");
-  blePeripheral.setDeviceName("100% PTT");
+  uint8_t mfg_data[] = {0x59,0,0,0x95};
+  blePeripheral.setManufacturerData(mfg_data, 4);
+  blePeripheral.setLocalName("PTT-Z");
+  blePeripheral.setDeviceName("PTT-Z");
   blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   blePeripheral.setAdvertisedServiceUuid(buttonService.uuid());
   blePeripheral.setAdvertisingInterval(kAdvertisingIntervalMs);
@@ -240,13 +242,16 @@ void setup() {
   // add service and characteristic
   blePeripheral.addAttribute(buttonService);
   blePeripheral.addAttribute(buttonCharacteristic);
-  blePeripheral.addAttribute(batteryService);
-  blePeripheral.addAttribute(batteryLevel);
+  blePeripheral.addAttribute(iphoneCharacteristic);
+  iphoneCharacteristic.setValue(1);
+  //blePeripheral.addAttribute(batteryService);
+  //blePeripheral.addAttribute(batteryLevel);
 
   // begin initialization
   blePeripheral.begin();
   buttonCharacteristic.setValue(0);
-  batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
+  //batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
+  iphoneCharacteristic.setValue(1);
 
   // enable low power mode and interrupt
   sd_power_mode_set(NRF_POWER_MODE_LOWPWR);
@@ -256,6 +261,8 @@ void setup() {
   sc.state = STATE_OFF;
 }
 
-void blePeripheralConnectHandler(BLECentral& central) {}
+void blePeripheralConnectHandler(BLECentral& central) {
+  iphoneCharacteristic.setValue(1);
+}
 
 void blePeripheralDisconnectHandler(BLECentral& central) {}

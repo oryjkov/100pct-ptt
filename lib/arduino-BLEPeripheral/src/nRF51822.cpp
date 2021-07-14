@@ -200,12 +200,14 @@ void nRF51822::begin(unsigned char advertisementDataSize,
 
   this->_advDataLen = 0;
 
+  /* TODO: moved to BLEPeripheral
   // flags
   this->_advData[this->_advDataLen + 0] = 2;
   this->_advData[this->_advDataLen + 1] = 0x01;
   this->_advData[this->_advDataLen + 2] = 0x06;
 
   this->_advDataLen += 3;
+  */
 
   if (advertisementDataSize && advertisementData) {
     for (int i = 0; i < advertisementDataSize; i++) {
@@ -1347,7 +1349,7 @@ void nRF51822::startAdvertising() {
   advertisingParameters.fp          = BLE_GAP_ADV_FP_ANY;
   advertisingParameters.p_whitelist = NULL;
   advertisingParameters.interval    = (this->_advertisingInterval * 16) / 10; // advertising interval (in units of 0.625 ms)
-  advertisingParameters.timeout     = 0;
+  advertisingParameters.timeout     = 60;
 
   sd_ble_gap_adv_start(&advertisingParameters);
 }

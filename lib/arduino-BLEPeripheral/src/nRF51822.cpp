@@ -575,7 +575,7 @@ void nRF51822::poll() {
           gap_conn_params.min_conn_interval = this->_minimumConnectionInterval;  // in 1.25ms units
           gap_conn_params.max_conn_interval = this->_maximumConnectionInterval;  // in 1.25ms unit
           gap_conn_params.slave_latency     = 0;
-          gap_conn_params.conn_sup_timeout  = 4000 / 10; // in 10ms unit
+          gap_conn_params.conn_sup_timeout  = 5000 / 10; // in 10ms unit
 
           sd_ble_gap_conn_param_update(this->_connectionHandle, &gap_conn_params);
         }
@@ -1349,7 +1349,7 @@ void nRF51822::startAdvertising() {
   advertisingParameters.fp          = BLE_GAP_ADV_FP_ANY;
   advertisingParameters.p_whitelist = NULL;
   advertisingParameters.interval    = (this->_advertisingInterval * 16) / 10; // advertising interval (in units of 0.625 ms)
-  advertisingParameters.timeout     = 60;
+  advertisingParameters.timeout     = 120;
 
   sd_ble_gap_adv_start(&advertisingParameters);
 }

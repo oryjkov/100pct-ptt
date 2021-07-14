@@ -16,9 +16,9 @@ static const uint32_t kShutdownDelayMs = 1 * 60 * 1000;
 
 // Frequency of BT advertising transmissions.
 static const uint32_t kAdvertisingIntervalMs = 60;
-// min, max connection interval. Lower values make the button more responsive.
-static const uint32_t kConnectionIntervalMinMs = 9;
-static const uint32_t kConnectionIntervalMaxMs = 9;
+// min, max connection interval in 1.25ms units. Lower values make the button more responsive.
+static const uint32_t kConnectionIntervalMin = 36;  // 45ms
+static const uint32_t kConnectionIntervalMax = 36;
 
 volatile bool buttonPressFlag = false;
 void buttonInterruptHandler() { buttonPressFlag = true; }
@@ -237,7 +237,7 @@ void setup() {
   blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   blePeripheral.setAdvertisedServiceUuid(buttonService.uuid());
   blePeripheral.setAdvertisingInterval(kAdvertisingIntervalMs);
-  blePeripheral.setConnectionInterval(kConnectionIntervalMinMs, kConnectionIntervalMaxMs);
+  blePeripheral.setConnectionInterval(kConnectionIntervalMin, kConnectionIntervalMax);
 
   // add service and characteristic
   blePeripheral.addAttribute(buttonService);

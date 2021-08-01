@@ -232,8 +232,8 @@ void setup() {
   // set advertised local name and service UUID
   uint8_t mfg_data[] = {0x59,0,0,0x95};
   blePeripheral.setManufacturerData(mfg_data, 4);
-  blePeripheral.setLocalName("PTT-Z");
-  blePeripheral.setDeviceName("PTT-Z");
+  blePeripheral.setLocalName("CLICK");
+  blePeripheral.setDeviceName("CLICK");
   blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   blePeripheral.setAdvertisedServiceUuid(buttonService.uuid());
   blePeripheral.setAdvertisingInterval(kAdvertisingIntervalMs);

@@ -80,6 +80,14 @@ The case is then connected to an STLink V2 using the following pinout ("B" stand
 <img src="pinout.jpg" width=300/>
 
 
+## Dependencies
+
+1. VSCode + PlatformIO with the arduino framework and the NRF S130 softdevice.
+
+1. [BLEPeripheral](https://github.com/sandeepmistry/arduino-BLEPeripheral).
+This library is forked here, as I needed to make a few low level modifications to get it working with an iPhone. 
+
+
 ## TODOs
 
 - Report battery level to the phone.

@@ -60,9 +60,6 @@ uint8_t adcVoltageToPercent(uint16_t adcVoltage) {
 
 BLEPeripheral blePeripheral = BLEPeripheral();
 
-// create service
-//BLEService buttonService("89a8591dbb19485b9f5958492bc33e24");
-//BLEService buttonService("0000ffe000001000800000805f9b34fb");
 // ffe0 is what a ptt button that worked on an iphone used
 BLEService buttonService("ffe0");
 BLEUnsignedCharCharacteristic iphoneCharacteristic("1525", BLERead | BLEWrite);

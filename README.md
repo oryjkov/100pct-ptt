@@ -13,7 +13,7 @@ It improves on handheld UHF radios when flying in an area with good cellular net
 coverage (Swiss Alps).
 
 The device is based on an [nrf51822](https://www.nordicsemi.com/products/nrf51822) BLE beacon
-[aliexpress](https://www.aliexpress.com/item/32810276263.html), powered by a CR2032 battery.
+([aliexpress](https://www.aliexpress.com/item/32810276263.html)), powered by a CR2032 battery.
 It integrates with the Zello App (Android and iPhone).
 
 The provided 3d-printed case can be mounted to a brake toggle, keeping the device within easy reach
@@ -28,20 +28,23 @@ should remain usable for a few years.
 
 ### Clickoris itself
 
-- nrf51822-based board [ali search](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon)
+- nrf51822-based board ([ali search](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon))
+
+  <img src="board.jpg" width=300/>
+
 - cr2032 battery
-- case: base, see ```bleButtonCase/baseCase.stl```
-- case: cover, see ```bleButtonCase/cat.stl```
+- case: base, see `bleButtonCase/baseCase.stl`
+- case: cover, see `bleButtonCase/cat.stl`
 - string for mounting (paraglider line works well).
 
 ### BOM for programming
 
-It is possible to solder the 4 wires to the nrf51822 board, but it gets old quickly when programming
+It is possible to solder the 4 wires to the nrf51822 board. But it gets old quickly when programming
 several boards, making it worth building the [programmer case](#programmer).
 
-- STLink V2 programmer [ali search](https://www.aliexpress.com/wholesale?SearchText=stlink+v2)
+- STLink V2 programmer ([ali search](https://www.aliexpress.com/wholesale?SearchText=stlink+v2))
 
-<img src="programmer.jpg" width=300/>
+  <img src="programmer.jpg" width=300/>
 
 - 4 wires (ground, +3.3V, clock, data)
 - (optional) programmer case 
@@ -62,7 +65,7 @@ flash the NRF softdevice from Arduino first, then program it from PlatformIO (se
 
 Before programming the button, it is necessary to apply a patch to the BLE stack of the Arduino
 framework, otherwise the power usage will be noticeably significantly higher. The patch is located
-in ```src/lowPow.patch``` and more information is available in this [blog post](https://www.iot-experiments.com/nrf51822-and-ble400/)
+in `src/lowPow.patch` and more information is available in this [blog post](https://www.iot-experiments.com/nrf51822-and-ble400/)
 
 ### Programmer
 To make programming many buttons easier it was worth building a special case for it: 

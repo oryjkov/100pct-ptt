@@ -1,14 +1,14 @@
 # 100pct-ptt a.k.a. Clickoris
 A BLE hardware button for transmitting over the [Zello](http://zello.com) PTT app.
 
-Primarily intended to be used during paragliding flights to communicate without having to take your hands off controls.
+Intended to be used during paragliding flights to communicate without having to take your hands off controls.
 
-<img src="clickoris.jpg" width=300/>
-<img src="mounted.jpg" width=300/>
+<img src="pics/clickoris.jpg" width=300/>
+<img src="pics/mounted.jpg" width=300/>
 
 ## Introduction
 
-Clickoris was created to help communicate with others during cross-country flights.
+Clickoris was created to help communicating with others during cross-country flights.
 It improves on handheld UHF radios when flying in an area with good cellular network
 coverage (Swiss Alps).
 
@@ -16,7 +16,7 @@ The device is based on an [nrf51822](https://www.nordicsemi.com/products/nrf5182
 ([aliexpress](https://www.aliexpress.com/item/32810276263.html)), powered by a CR2032 battery.
 It integrates with the Zello App (Android and iPhone).
 
-The provided 3d-printed case can be mounted to a brake toggle, keeping the device within easy reach
+Provided 3d-printed case can be mounted to a brake toggle, keeping the device within easy reach
 and making it possible to push the button even when wearing thick gloves.
 
 Once paired in the Zello app, button stays connected for a several hours and can be used even
@@ -24,63 +24,81 @@ with the phone screen turned off (or running another app). When not in use, the 
 off until it is clicked again. When powered off, battery usage is close to zero, and the button
 should remain usable for a few years.
 
-## Bill of materials
+## How to make one
 
-### Clickoris itself
+1. Get the parts
 
-- nrf51822-based board ([ali search](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon))
+    - [board](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon)
+	  <img src="pics/board.jpg" width=300/>
 
-  <img src="board.jpg" width=300/>
+    - [programmer](https://www.aliexpress.com/wholesale?SearchText=stlink+v2)
+	  <img src="pics/programmer.jpg" width=300/> 
 
-- cr2032 battery
-- case: base, see `bleButtonCase/baseCase.stl`
-- case: cover, see `bleButtonCase/cat.stl`
-- string for mounting (paraglider line works well).
+    - CR2032 battery
 
-### BOM for programming
+1. [Program](#programming-the-board) the board.
 
-It is possible to solder the 4 wires to the nrf51822 board. But it gets old quickly when programming
-several boards, making it worth building the [programmer case](#programmer).
+1. Print the case, it consists of 2 parts:
+    - base `bleButtonCase/baseCase.stl`
+    - cover `bleButtonCase/cap.stl`
 
-- STLink V2 programmer ([ali search](https://www.aliexpress.com/wholesale?SearchText=stlink+v2))
+1. [Pair](#pairing-with-zello) with Zello.
 
-  <img src="programmer.jpg" width=300/>
+1. Tie it to a break handle.
 
-- 4 wires (ground, +3.3V, clock, data)
-- (optional) programmer case 
-- (optional) programmer pins (4x, [ali](https://www.aliexpress.com/item/32944964110.html))
+1. Go fly.
+
+
+## Programming the board
+
+The board is programmed with an STLink V2 programmer using 4 pins (SWDIO, SWCLK, GND, 3.3V). It
+is possible to simply solder the 4 wires to the board (pinout below), or build a [Flashing case](#flashing-case).
+
+### Pinout diagram 
+<img src="pics/pinout.jpg" width=300/>
+
+### Flashing
+
+Flashing is done from PlatformIO (VSCode plugin) - install it first and open this repository in PlatformIO.
+
+Before programming the button, it is necessary to apply a patch to the BLE stack of the Arduino
+framework, otherwise the power usage will be significantly higher. The patch is located
+in `src/lowPow.patch` and more information is available in this [blog post](https://www.iot-experiments.com/nrf51822-and-ble400/)
+
+Once the patch is applied, it should be just the matter of uploading the firmware.
+
+To check if clickoris is working, install the battery and push the button - it should make the green light blink once quickly.
+If the light stays off, read on.
+
+**NOTE** in in some cases the button did not work after flashing from PlatformIO. In those cases it
+helped to:
+1. [flash the NRF softdevice](https://github.com/sandeepmistry/arduino-nRF5#flashing-a-softdevice) from the Arduino IDE.
+1. Program it from PlatformIO as normal(see [TODOs](#todos)).
+
+
+### Flashing case
+To make programming many buttons easier it is worth building a special case to avoid having to solder the programming wires.
+
+<img src="pics/programmer_case.jpg" width=300/>
+<img src="pics/full_programmer.jpg" width=300/>
+
+4 spring loaded pins are glued to the 3d-printed case so that the board can be pushed in with a finger against the contacts
+while it is being flashed.
+
+The pins are connected to an STLink V2 using the following pinout ("B" stands for battery):
+<img src="pics/programmer_pinout.jpg" width=300/>
+
+
+## Printing
+Printed with no supports, 15% infill works OK. Use 0.2mm layer height as this is what I've tested with. Both parts of the case
+can be printed in one go.
 
 
 ## Pairing with Zello
 Android [instructions](https://docs.google.com/document/d/1WHSKjbKlpSfUliMCR7onvabltsctEBkE9Yl1S6ZhOwA/edit). IPhone should be similar.
 
 
-## Programming
-
-The board is programmed with an STLink V2 programmer using 4 pins (SWDIO, SWCLK, GND, 3.3V). It
-is possibld to simply solder the 4 wires to the board, or build a [Programmer](#programmer).
-
-Typically programming is done from PlatformIO, however in some cases it did not work and I had to
-flash the NRF softdevice from Arduino first, then program it from PlatformIO (see [TODOs](#todos)).
-
-Before programming the button, it is necessary to apply a patch to the BLE stack of the Arduino
-framework, otherwise the power usage will be noticeably significantly higher. The patch is located
-in `src/lowPow.patch` and more information is available in this [blog post](https://www.iot-experiments.com/nrf51822-and-ble400/)
-
-### Programmer
-To make programming many buttons easier it was worth building a special case for it: 
-
-<img src="programmer_case.jpg" width=300/>
-<img src="full_programmer.jpg" width=300/>
-
-Spring loaded pins can be glued to the case so that the button can be pushed in when it is being
-programmed.
-
-The case is then connected to an STLink V2 using the following pinout ("B" stands for battery):
-<img src="pinout.jpg" width=300/>
-
-
-## Dependencies
+## Code dependencies
 
 1. VSCode + PlatformIO with the arduino framework and the NRF S130 softdevice.
 

@@ -1,5 +1,5 @@
 # 100pct-ptt a.k.a. Clickoris
-A BLE hardware button for transmitting over the [Zello](http://zello.com) PTT app while flying a
+A BLE hardware button for transmitting over the [Zello](http://zello.com) push-to-talk app while flying a
 paraglider.
 
 <img src="pics/clickoris.jpg" width=300/>

@@ -1,7 +1,6 @@
 # 100pct-ptt a.k.a. Clickoris
-A BLE hardware button for transmitting over the [Zello](http://zello.com) PTT app.
-
-Intended to be used during paragliding flights to communicate without having to take your hands off controls.
+A BLE hardware button for transmitting over the [Zello](http://zello.com) PTT app while flying a
+paraglider.
 
 <img src="pics/clickoris.jpg" width=300/>
 <img src="pics/mounted.jpg" width=300/>
@@ -19,9 +18,9 @@ It integrates with the Zello App (Android and iPhone).
 Provided 3d-printed case can be mounted to a brake toggle, keeping the device within easy reach
 and making it possible to push the button even when wearing thick gloves.
 
-Once paired in the Zello app, button stays connected for a several hours and can be used even
+Once paired in the Zello app, button stays connected for several hours and can be used even
 with the phone screen turned off (or running another app). When not in use, the button is powered
-off until it is clicked again. When powered off, battery usage is close to zero, and the button
+off (a click powers it on). When powered off, battery usage is close to zero, and the button
 should remain usable for a few years.
 
 ## How to make one

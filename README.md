@@ -25,7 +25,7 @@ should remain usable for a few years.
 
 ## How to make one
 
-1. Get the parts
+1. Get the parts (use the provided links to AliExpress)
 
     - [board](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon)
 	  <img src="pics/board.jpg" width=300/>

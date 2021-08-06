@@ -1,4 +1,5 @@
 # 100pct-ptt a.k.a. Clickoris
+
 A BLE hardware button for transmitting over the [Zello](http://zello.com) push-to-talk app while flying a
 paraglider.
 
@@ -15,13 +16,13 @@ The device is based on an [nrf51822](https://www.nordicsemi.com/products/nrf5182
 ([aliexpress](https://www.aliexpress.com/item/32810276263.html)), powered by a CR2032 battery.
 It integrates with the Zello App (Android and iPhone).
 
-Provided 3d-printed case can be mounted to a brake toggle, keeping the device within easy reach
+The provided 3D-printed case is designed to be mounted to a brake toggle, keeping the device within easy reach
 and making it possible to push the button even when wearing thick gloves.
 
 Once paired in the Zello app, button stays connected for several hours and can be used even
-with the phone screen turned off (or running another app). When not in use, the button is powered
+with the phone screen turned off or when running another app. When not in use, the button is powered
 off (a click powers it on). When powered off, battery usage is close to zero, and the button
-should remain usable for a few years.
+should remain usable for several years.
 
 ## How to make one
 
@@ -43,7 +44,7 @@ should remain usable for a few years.
 
 1. [Pair](#pairing-with-zello) with Zello.
 
-1. Tie it to a break handle.
+1. Tie it to a brake handle.
 
 1. Go fly.
 
@@ -51,14 +52,14 @@ should remain usable for a few years.
 ## Programming the board
 
 The board is programmed with an STLink V2 programmer using 4 pins (SWDIO, SWCLK, GND, 3.3V). It
-is possible to simply solder the 4 wires to the board (pinout below), or build a [Flashing case](#flashing-case).
+is possible to simply solder the 4 wires to the board (pinout below), or build a [flashing case](#flashing-case).
 
 ### Pinout diagram 
 <img src="pics/pinout.jpg" width=300/>
 
 ### Flashing
 
-Flashing is done from PlatformIO (VSCode plugin) - install it first and open this repository in PlatformIO.
+Flashing is done from the [PlatformIO VSCode plugin](https://platformio.org/). Install it first and open this repository in PlatformIO.
 
 Before programming the button, it is necessary to apply a patch to the BLE stack of the Arduino
 framework, otherwise the power usage will be significantly higher. The patch is located
@@ -66,22 +67,23 @@ in `src/lowPow.patch` and more information is available in this [blog post](http
 
 Once the patch is applied, it should be just the matter of uploading the firmware.
 
-To check if clickoris is working, install the battery and push the button - it should make the green light blink once quickly.
+To check if the Clickoris is working, install the battery and push the button. It should make the green light blink once quickly.
 If the light stays off, read on.
 
 **NOTE** in in some cases the button did not work after flashing from PlatformIO. In those cases it
 helped to:
-1. [flash the NRF softdevice](https://github.com/sandeepmistry/arduino-nRF5#flashing-a-softdevice) from the Arduino IDE.
+1. [Flash the NRF softdevice](https://github.com/sandeepmistry/arduino-nRF5#flashing-a-softdevice) from the Arduino IDE.
 1. Program it from PlatformIO as normal(see [TODOs](#todos)).
 
 
 ### Flashing case
+
 To make programming many buttons easier it is worth building a special case to avoid having to solder the programming wires.
 
 <img src="pics/programmer_case.jpg" width=300/>
 <img src="pics/full_programmer.jpg" width=300/>
 
-4 spring loaded pins are glued to the 3d-printed case so that the board can be pushed in with a finger against the contacts
+Four spring-loaded pins are glued to the 3D-printed case so that the board can be pushed in with a finger against the contacts
 while it is being flashed.
 
 The pins are connected to an STLink V2 using the following pinout ("B" stands for battery):
@@ -89,12 +91,14 @@ The pins are connected to an STLink V2 using the following pinout ("B" stands fo
 
 
 ## Printing
+
 Printed with no supports, 15% infill works OK. Use 0.2mm layer height as this is what I've tested with. Both parts of the case
 can be printed in one go.
 
 
 ## Pairing with Zello
-Android [instructions](https://docs.google.com/document/d/1WHSKjbKlpSfUliMCR7onvabltsctEBkE9Yl1S6ZhOwA/edit). IPhone should be similar.
+
+Android [instructions](https://docs.google.com/document/d/1WHSKjbKlpSfUliMCR7onvabltsctEBkE9Yl1S6ZhOwA/edit). Pairing with an iPhone should be similar.
 
 
 ## Code dependencies
@@ -102,7 +106,7 @@ Android [instructions](https://docs.google.com/document/d/1WHSKjbKlpSfUliMCR7onv
 1. VSCode + PlatformIO with the arduino framework and the NRF S130 softdevice.
 
 1. [BLEPeripheral](https://github.com/sandeepmistry/arduino-BLEPeripheral).
-This library is forked here, as I needed to make a few low level modifications to get it working with an iPhone. 
+This library is forked here, as a few low-level modifications were needed to get it working with an iPhone. 
 
 
 ## TODOs

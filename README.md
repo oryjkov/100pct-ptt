@@ -3,8 +3,19 @@
 A BLE hardware button for transmitting over the [Zello](http://zello.com) push-to-talk app while flying a
 paraglider.
 
-| <img src="pics/clickoris.jpg" width="300" style="width: 300px;max-height: 100%" />| <img src="pics/mounted.jpg"  width="300" style="width: 300px;max-height: 100%" />|<img src="pics/action.jpg"   width="300" style="width: 33%;max-height: 100%" />|
+|<img src="pics/clickoris.jpg" width="300"/>|<img src="pics/mounted.jpg" width="300"/>|<img src="pics/action.jpg" width="300"/>|
 |-|-|-|
+
+* [Introduction](#introduction)
+* [How to make one](#how-to-make-one)
+* [Programming the board](#programming-the-board)
+   * [Pinout diagram](#pinout-diagram)
+   * [Flashing](#flashing)
+   * [Flashing case](#flashing-case)
+* [Printing](#printing)
+* [Pairing with Zello](#pairing-with-zello)
+* [Code dependencies](#code-dependencies)
+* [TODOs](#todos)
 
 ## Introduction
 

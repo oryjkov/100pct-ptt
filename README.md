@@ -2,8 +2,11 @@
 A BLE hardware button for transmitting over the [Zello](http://zello.com) push-to-talk app while flying a
 paraglider.
 
-<img src="pics/clickoris.jpg" width=300/>
-<img src="pics/mounted.jpg" width=300/>
+<p align="center">
+   <img src="pics/clickoris.jpg" style="width: 33%;max-height: 100%" />
+   <img src="pics/mounted.jpg" style="width: 33%;max-height: 100%" />
+   <img src="pics/action.jpg" style="width: 33%;max-height: 100%" />
+</p>
 
 ## Introduction
 

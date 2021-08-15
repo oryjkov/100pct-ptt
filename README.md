@@ -28,13 +28,9 @@ should remain usable for several years.
 
 1. Get the parts (use the provided links to AliExpress)
 
-    - [board](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon)
-	  <img src="pics/board.jpg" width=300/>
-
-    - [programmer](https://www.aliexpress.com/wholesale?SearchText=stlink+v2)
-	  <img src="pics/programmer.jpg" width=300/> 
-
-    - CR2032 battery
+    |[board](https://www.aliexpress.com/wholesale?SearchText=NRF51822+beacon)|[programmer](https://www.aliexpress.com/wholesale?SearchText=stlink+v2)|CR2032 battery|
+    |:-:|:-:|:-:|
+    |<img src="pics/board.jpg" width=300/>|<img src="pics/programmer.jpg" width=300/>|<img src="https://www.panasonic-batteries.com/sites/default/files/CR-2032EL1B_low_resolution-3942.jpg" width="300"/>|
 
 1. [Program](#programming-the-board) the board.
 
@@ -80,14 +76,13 @@ helped to:
 
 To make programming many buttons easier it is worth building a special case to avoid having to solder the programming wires.
 
-<img src="pics/programmer_case.jpg" width=300/>
-<img src="pics/full_programmer.jpg" width=300/>
+|<img src="pics/programmer_case.jpg" width=300/>|<img src="pics/full_programmer.jpg" width=300/>|<img src="pics/programmer_pinout.jpg" width=300/>|
+|-|-|-|
 
 Four spring-loaded pins are glued to the 3D-printed case so that the board can be pushed in with a finger against the contacts
 while it is being flashed.
 
-The pins are connected to an STLink V2 using the following pinout ("B" stands for battery):
-<img src="pics/programmer_pinout.jpg" width=300/>
+The pins are connected to an STLink V2 using the following pinout from the image above ("B" stands for battery).
 
 
 ## Printing

@@ -62,6 +62,7 @@ BLEPeripheral blePeripheral = BLEPeripheral();
 
 // ffe0 is what a ptt button that worked on an iphone used
 BLEService buttonService("ffe0");
+// TODO: not sure what this is for, but it seems to make it work on an iphone.
 BLEUnsignedCharCharacteristic iphoneCharacteristic("1525", BLERead | BLEWrite);
 BLECharCharacteristic buttonCharacteristic("ffe1", BLERead | BLENotify);
 

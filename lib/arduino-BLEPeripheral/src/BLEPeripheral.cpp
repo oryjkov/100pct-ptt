@@ -102,11 +102,11 @@ void BLEPeripheral::begin() {
   {
     advertisementData[advertisementDataSize].length = 5;
     advertisementData[advertisementDataSize].type = GAP_NAME_COMPLETE;
-    advertisementData[advertisementDataSize].data[0] = 'P';
-    advertisementData[advertisementDataSize].data[1] = 'T';
-    advertisementData[advertisementDataSize].data[2] = 'T';
-    advertisementData[advertisementDataSize].data[3] = '-';
-    advertisementData[advertisementDataSize].data[4] = 'Z';
+    advertisementData[advertisementDataSize].data[0] = 'C';
+    advertisementData[advertisementDataSize].data[1] = 'L';
+    advertisementData[advertisementDataSize].data[2] = 'I';
+    advertisementData[advertisementDataSize].data[3] = 'C';
+    advertisementData[advertisementDataSize].data[4] = 'K';
     advertisementDataSize += 1;
     remainingAdvertisementDataLength -= 2 + 5;
 

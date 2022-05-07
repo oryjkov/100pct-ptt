@@ -13,3 +13,20 @@ Total: 1.104320e-04 mAh (over 10.0 sec), per hour: 3.975401e-02 mAh, est. batter
 
 transmitting:
 Total: 1.196119e-02 mAh (over 10.0 sec), per hour: 4.305997e+00 mAh, est. battery life: 48.8 (hours)
+
+
+## Test on 06.05.2022
+Ran for 2 hours without the phone being around.
+
+In the first 500 sec est battery life was 8000 hours. (sleep mode)
+
+
+### Original PTTZ button
+connected running for 1 minute: 16000 hours lifetime.
+On but not connected for 1 minute: 1400 hours lifetime.
+Connected and button pressed for 1 minute: 380 hours lifetime.
+
+My button (similar setup)
+connected: 5700 hours
+On but not connected: 750000 hours
+Transmitting: 50 hours

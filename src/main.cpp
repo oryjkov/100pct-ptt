@@ -45,17 +45,26 @@ uint16_t readVoltageAdc(void) {
   return result;
 }
 
-uint8_t adcVoltageToPercent(uint16_t adcVoltage) {
-  float voltage = static_cast<float>(adcVoltage) * 3.6 / 1024.0;
-  // Assume linear range between 1.8 and 3.1 volts which will stay at full
-  // charge for a long time then drop rapidly.
-  // TODO: much better to use a discharge graph like
-  // https://components101.com/batteries/cr2032-lithium-coin-cell-pinout-specs-equivalent-datasheet
-  uint8_t pct = static_cast<uint8_t>((voltage - 1.8) * 100 / (3.1 - 1.8));
-  if (pct > 100) {
-    pct = 100;
-  }
-  return pct;
+uint8_t getBatLevel() {
+    float volts = readVoltageAdc() * 3.6f / 1024.0f;
+
+    // https://uncannier.com/cr2032-lithium-battery-charge-level-measurement/
+    const struct Point { float v; uint16_t c; } vcPairs[] = { 
+        {3.0, 100}, {2.9, 80}, {2.8, 60}, {2.7, 40}, 
+        {2.6, 30}, {2.5, 20}, {2.4, 10}, {2.0, 0} 
+    };
+
+    if (volts >= vcPairs[0].v) return 100;
+    if (volts <= vcPairs[7].v) return 0;
+
+    for (int i = 1; i < 8; i++) {
+        if (volts > vcPairs[i].v) {
+            const Point &p1 = vcPairs[i-1];
+            const Point &p2 = vcPairs[i];
+            return round(p1.c + (volts - p1.v) * (p2.c - p1.c)/(p2.v - p1.v));
+        }
+    }
+    return 0;
 }
 
 BLEPeripheral blePeripheral = BLEPeripheral();
@@ -66,8 +75,8 @@ BLEService buttonService("ffe0");
 BLEUnsignedCharCharacteristic iphoneCharacteristic("1525", BLERead | BLEWrite);
 BLECharCharacteristic buttonCharacteristic("ffe1", BLERead | BLENotify);
 
-//BLEService batteryService("0000180f00001000800000805f9b34fb");
-//BLEUnsignedCharCharacteristic batteryLevel("00002a1900001000800000805f9b34fb", BLERead);
+BLEService batteryService("180f");
+BLEUnsignedCharCharacteristic batteryLevel("2a19", BLERead | BLENotify);
 
 // State transition and executes exit action for the current state.
 // Diagram: https://photos.app.goo.gl/6E5oTZQ78MnhBJMR8
@@ -122,7 +131,7 @@ StateEnum stateTransition(StateContainer* sc, Event e) {
       } else {
         newState = STATE_SLEEP;
         buttonCharacteristic.setValue(0);
-        //batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
+        batteryLevel.setValue(getBatLevel());
       }
       break;
     default:
@@ -232,23 +241,24 @@ void setup() {
   blePeripheral.setManufacturerData(mfg_data, 4);
   blePeripheral.setLocalName("CLICK");
   blePeripheral.setDeviceName("CLICK");
-  blePeripheral.setAppearance(BLE_APPEARANCE_HID_KEYBOARD);
-  blePeripheral.setAdvertisedServiceUuid(buttonService.uuid());
+  blePeripheral.setAppearance(BLE_APPEARANCE_GENERIC_REMOTE_CONTROL);
   blePeripheral.setAdvertisingInterval(kAdvertisingIntervalMs);
   blePeripheral.setConnectionInterval(kConnectionIntervalMin, kConnectionIntervalMax);
 
   // add service and characteristic
+  blePeripheral.setAdvertisedServiceUuid(buttonService.uuid());
   blePeripheral.addAttribute(buttonService);
   blePeripheral.addAttribute(buttonCharacteristic);
   blePeripheral.addAttribute(iphoneCharacteristic);
-  iphoneCharacteristic.setValue(1);
-  //blePeripheral.addAttribute(batteryService);
-  //blePeripheral.addAttribute(batteryLevel);
+  
+  blePeripheral.setAdvertisedServiceUuid(batteryService.uuid());
+  blePeripheral.addAttribute(batteryService);
+  blePeripheral.addAttribute(batteryLevel);
 
   // begin initialization
   blePeripheral.begin();
   buttonCharacteristic.setValue(0);
-  //batteryLevel.setValue(adcVoltageToPercent(readVoltageAdc()));
+  batteryLevel.setValue(getBatLevel());
   iphoneCharacteristic.setValue(1);
 
   // enable low power mode and interrupt

@@ -251,7 +251,6 @@ void setup() {
   blePeripheral.addAttribute(buttonCharacteristic);
   blePeripheral.addAttribute(iphoneCharacteristic);
   
-  blePeripheral.setAdvertisedServiceUuid(batteryService.uuid());
   blePeripheral.addAttribute(batteryService);
   blePeripheral.addAttribute(batteryLevel);
 

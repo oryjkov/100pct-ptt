@@ -245,7 +245,7 @@ void nRF51822::begin(unsigned char advertisementDataSize,
     }
   }
 
-  this->_numLocalCharacteristics -= 3; // 0x2a00, 0x2a01, 0x2a05
+  this->_numLocalCharacteristics -= 2; // 0x2a00, 0x2a01, 0x2a05
 
   this->_localCharacteristicInfo = (struct localCharacteristicInfo*)malloc(sizeof(struct localCharacteristicInfo) * this->_numLocalCharacteristics);
 
